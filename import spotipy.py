@@ -10,6 +10,7 @@ SPOTIPY_REDIRECT_URI = 'your_redirect_uri'
 username = 'your_username'
 playlist_id_to_copy = 'id_of_playlist_you_want_to_copy'
 playlist_id_to_paste = 'id_of_playlist_where_you_want_to_paste'
+filter_artist = 'desired_artist_name'  # Enter the artist you want to filter by
 
 # Create OAuth object
 scope = 'playlist-modify-public'  # permission needed to add to new playlist
@@ -19,7 +20,9 @@ sp = spotipy.Spotify(auth_manager=auth_manager)
 
 # Get tracks from the playlist you want to copy
 source_tracks = sp.playlist_items(playlist_id_to_copy)['items']
-source_track_ids = [track['track']['id'] for track in source_tracks]
+
+# Filter tracks by artist and get their IDs
+source_track_ids = [track['track']['id'] for track in source_tracks if filter_artist in [artist['name'] for artist in track['track']['artists']]]
 
 # Copy tracks to the target playlist
 sp.playlist_add_items(playlist_id_to_paste, source_track_ids)
